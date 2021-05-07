@@ -1,4 +1,4 @@
-Tradingview Webhook Forex Heroku
+Tradingview Webhook Crypto Heroku
 ------------------------------------------
 
 The application receives webhook alerts from the tradingview platform for the crypto market in a JSON format and place orders according to the instructions received.
