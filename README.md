@@ -1,7 +1,7 @@
 Tradingview Webhook Forex Heroku
 ------------------------------------------
 
-This application is intended to receive webhook alerts from the tradingview platform for the FOREX market in a JSON format and place orders according to the instructions received.
+The application receives webhook alerts from the tradingview platform for the crypto market in a JSON format and place orders according to the instructions received.
 
 
 Configuration Files:
