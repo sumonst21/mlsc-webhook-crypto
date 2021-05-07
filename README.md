@@ -25,4 +25,3 @@ Technologies:
 - Python
 - Flask
 - Heroku
-- Binance
