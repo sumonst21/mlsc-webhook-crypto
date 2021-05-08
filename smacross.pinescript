@@ -1,17 +1,16 @@
-//@version=4
-strategy("Doge SMA", overlay=true, initial_capital=25, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © mcosta02
 
-start_date = input(title="Start Date", type=input.integer, defval=4, minval=1, maxval=31)
-start_month = input(title="Start Month", type=input.integer, defval=9, minval=1, maxval=12)
-start_year = input(title="Start Year", type=input.integer, defval=2020)
-end_date = input(title="End Date", type=input.integer, defval=6, minval=1, maxval=31)
-end_month = input(title="End Month", type=input.integer, defval=9, minval=1, maxval=12)
-end_year = input(title="End Year", type=input.integer, defval=2020)
-     
-between_dates = (time >= timestamp(start_year, start_month, start_date, 7, 0)) and (time < timestamp(end_year, end_month, end_date, 23, 59))
+//@version=4
+strategy("mlsc_binance_smacross", overlay=true, initial_capital=100, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+
+i_startTime = input(defval = timestamp("01 Jan 2021 13:30 +0000"), title = "Start Time", type = input.time)
+i_endTime = input(defval = timestamp("30 Jan 2021 19:30 +0000"), title = "End Time", type = input.time)     
+
+between_dates = (time >= i_startTime ) and (time <= i_endTime )
     
-fast_ma_period = input(title="Fast MA", type=input.integer, defval=2)
-slow_ma_period = input(title="Slow MA", type=input.integer, defval=5)
+fast_ma_period = input(title="Fast MA", type=input.integer, defval=5)
+slow_ma_period = input(title="Slow MA", type=input.integer, defval=2)
 
 fast_ma = sma(close, fast_ma_period)
 slow_ma = sma(close, slow_ma_period)

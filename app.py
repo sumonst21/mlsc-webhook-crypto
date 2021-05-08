@@ -5,7 +5,7 @@ from binance.enums import *
 
 app = Flask(__name__)
 
-client = Client(config.API_KEY, config.API_SECRET, tld='us')
+client = Client(config.API_KEY, config.API_SECRET)
 
 def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
@@ -32,9 +32,10 @@ def webhook():
             "message": "Nice try, invalid passphrase"
         }
 
+    symbol = "BTCUSDT"
     side = data['strategy']['order_action'].upper()
     quantity = data['strategy']['order_contracts']
-    order_response = order(side, quantity, "DOGEUSD")
+    order_response = order(side, quantity, symbol )
 
     if order_response:
         return {
