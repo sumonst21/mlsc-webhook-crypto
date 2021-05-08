@@ -16,6 +16,10 @@ Configuration Files:
 
       pip3 install -r requirements.txt
   
+Strategies:
+----------
+- sma cross - (fast x slow)
+  
 Exchanges:
 ---------
 - Binance
