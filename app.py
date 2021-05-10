@@ -8,11 +8,13 @@ app = Flask(__name__)
 client = Client(config.API_KEY, config.API_SECRET)
 
 # general functions
-def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET, stopPrice=0):
+def order(side, quantity, symbol, stopPrice, order_type=ORDER_TYPE_MARKET):
     
     try:
-        # print(f"sending order {order_type} - {side} {quantity} {symbol}")
-        order = client.futures_create_order(symbol=symbol, side=side, type=order_type, quantity=quantity, stopPrice=stopPrice)
+        if stopPrice:
+            order = client.futures_create_order(symbol=symbol, side=side, type=order_type, quantity=quantity, stopPrice=stopPrice)
+        else:
+            order = client.futures_create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
     except Exception as e:
         print("an exception occured - {}".format(e))
         return False
@@ -21,7 +23,6 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET, stopPrice=0):
 
 def percentage_change(start_value, end_value):
     return float(abs(start_value - end_value) / start_value)
-
 
 @app.route('/')
 def welcome():
@@ -80,28 +81,31 @@ def breakout():
     stop_loss_perc = percentage_change(entry_price, pv_low if side_main == "BUY" else pv_high)
 
     # set leverage to maximum allowe
-    if client:
-        leverage = client.futures_change_leverage(symbol=symbol, leverage='75')
-        print('Initializing leverage for', symbol, ':', leverage['leverage'], 'x')
+    # if client:
+        
+    #     leverage = client.futures_change_leverage(symbol=symbol, leverage='75')
+    #     print('Initializing leverage for', symbol, ':', leverage['leverage'], 'x')
  
     # set parameters to create binance order
     if stop_loss_perc:
 
-        quantity = (risk / stop_loss_perc) / entry_price
+        quantity = round((risk / stop_loss_perc) / entry_price)
         stop_loss = pv_low if side_main == "BUY" else pv_high
+
         take_profit = ((stop_loss_perc * take_profit_target)) * entry_price
         take_profit = take_profit + entry_price if side_main == "BUY" else abs(take_profit - entry_price)
+        take_profit = round(take_profit, 3)
 
         print(f'placing MARKET-{side_main} order for symbol {symbol} quantity {quantity} estimatedEntry {entry_price}')
-        order_main = order(side_main, quantity, symbol, order_type='MARKET')
+        order_main = order(side_main, quantity, symbol, 0, order_type='MARKET')
 
         if order_main:
                 
             print(f'placing STOP_MARKET-{side_cross} order for symbol {symbol} quantity {quantity} stopPrice {stop_loss} ')
-            order_stop = order(side_cross, quantity, symbol, order_type='STOP_MARKET')
+            order_stop = order(side_cross, quantity, symbol, stop_loss, order_type='STOP_MARKET')
 
             print(f'placing TAKE_PROFIT_MARKET-{side_cross} order for symbol {symbol} quantity {quantity} stopPrice {take_profit} ')
-            order_take = order(side_cross, quantity, symbol, order_type='TAKE_PROFIT_MARKET')
+            order_take = order(side_cross, quantity, symbol, stop_loss, order_type='TAKE_PROFIT_MARKET')
 
         else:
         
