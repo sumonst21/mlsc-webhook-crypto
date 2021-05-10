@@ -71,7 +71,8 @@ def breakout():
 
     # parse tradingview webhook data
     take_profit_target = 2
-    symbol = data['symbol']
+    symbol_future = data['symbol'].find('PERP')
+    symbol = data['symbol'][:symbol_future]
     entry_price = data['open']
     pv_high = data['pv_high']
     pv_low  = data['pv_low']
@@ -81,10 +82,10 @@ def breakout():
     stop_loss_perc = percentage_change(entry_price, pv_low if side_main == "BUY" else pv_high)
 
     # set leverage to maximum allowe
-    # if client:
+    if client:
         
-    #     leverage = client.futures_change_leverage(symbol=symbol, leverage='75')
-    #     print('Initializing leverage for', symbol, ':', leverage['leverage'], 'x')
+        leverage = client.futures_change_leverage(symbol=symbol, leverage='30')
+        print('Initializing leverage for', symbol, ':', leverage['leverage'], 'x')
  
     # set parameters to create binance order
     if stop_loss_perc:
@@ -94,10 +95,14 @@ def breakout():
 
         take_profit = ((stop_loss_perc * take_profit_target)) * entry_price
         take_profit = take_profit + entry_price if side_main == "BUY" else abs(take_profit - entry_price)
-        take_profit = round(take_profit, 3)
-
+        
         print(f'placing MARKET-{side_main} order for symbol {symbol} quantity {quantity} estimatedEntry {entry_price}')
+        
+        
         order_main = order(side_main, quantity, symbol, 0, order_type='MARKET')
+
+
+        
 
         if order_main:
                 
@@ -105,7 +110,7 @@ def breakout():
             order_stop = order(side_cross, quantity, symbol, stop_loss, order_type='STOP_MARKET')
 
             print(f'placing TAKE_PROFIT_MARKET-{side_cross} order for symbol {symbol} quantity {quantity} stopPrice {take_profit} ')
-            order_take = order(side_cross, quantity, symbol, stop_loss, order_type='TAKE_PROFIT_MARKET')
+            order_take = order(side_cross, quantity, symbol, take_profit, order_type='TAKE_PROFIT_MARKET')
 
         else:
         
