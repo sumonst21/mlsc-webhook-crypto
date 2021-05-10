@@ -23,3 +23,17 @@
         "prev_market_position_size": {{strategy.prev_market_position_size}}
     }
 }
+
+
+{
+    "passphrase": jimihendrix123
+    "symbol": "{{ticker}}",
+    "open": {{open}},
+    "pv_high": {{plot("pv_high")}},
+    "pv_low": {{plot("pv_low")}},
+    "go_long": {{plot("golong")}},
+    "risk": "5",
+    "timeframe": "M15"
+}   
+
+
