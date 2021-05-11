@@ -28,7 +28,7 @@ def percentage_change(start_value, end_value):
 def welcome():
     return render_template('index.html')
 
-@app.route('/webhook', methods=['POST'])
+@app.route('/smacross', methods=['POST'])
 def webhook():
     #print(request.data)
     data = json.loads(request.data)
@@ -97,12 +97,8 @@ def breakout():
         take_profit = take_profit + entry_price if side_main == "BUY" else abs(take_profit - entry_price)
         
         print(f'placing MARKET-{side_main} order for symbol {symbol} quantity {quantity} estimatedEntry {entry_price}')
-        
-        
+                
         order_main = order(side_main, quantity, symbol, 0, order_type='MARKET')
-
-
-        
 
         if order_main:
                 
